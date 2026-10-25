@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    container_name: devops-experiment4
+    ports:
+      - "8000:8000"
+    environment:
+      APP_MESSAGE: "Hello from DevOps Experiment 4!"
+    restart: unless-stopped
