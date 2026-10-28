@@ -1,0 +1,36 @@
+name: Continuous Deployment - Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build and test Maven project
+        run: mvn --batch-mode clean verify
+        working-directory: maven-automation-pipeline
+
+  deploy-production:
+    needs: build-and-validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Production Environment
+        run: |
+          echo "CI tests passed. Deploying straight to Production automatically..."
+          docker compose up -d --force-recreate
